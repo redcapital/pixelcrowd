@@ -1,0 +1,19 @@
+.app.container {
+  width: 1170px;
+}
+
+#area {
+  width: 900px;
+  height: 500px;
+  background: #ccc;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+#area .player {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: red;
+}

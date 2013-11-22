@@ -1,0 +1,38 @@
+<head>
+  <title>pixelcrowd</title>
+</head>
+
+<body>
+  <div class="container app">
+    <div class="row">
+      <div class="col-xs-12">
+        {{renderPage}}
+      </div>
+    </div>
+  </div>
+</body>
+
+<template name="home">
+  <h1>Hello World!</h1>
+  {{greeting}}
+  <button id="start" class="btn btn-success">Start23</button>
+</template>
+
+<template name="game">
+  <div class="row">
+    <div class="col-xs-10">
+      <div id="area">
+        <div class="player"></div>
+        <div class="player"></div>
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <h3>Players</h3>
+      <ul>
+      {{#each players}}
+      <li>{{name}}, {{idle}}, {{last_keepalive}}, {{_id}}</li>
+      {{/each}}
+      </ul>
+    </div>
+  </div>
+</template>
