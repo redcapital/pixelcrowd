@@ -1,0 +1,12 @@
+{
+  "name": "pixelcrowd",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/galymzhan/pixelcrowd.git"
+  },
+  "dependencies": {
+    "node-static": "0.x",
+    "socket.io": "0.9.x"
+  }
+}

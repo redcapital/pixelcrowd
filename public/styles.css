@@ -1,0 +1,29 @@
+#app {
+  width: 1000px;
+  margin: 20px auto;
+}
+
+#area, #sidebar {
+  height: 600px;
+  border: 1px solid red;
+}
+
+#area {
+  margin-right: 200px;
+  position: relative;
+  background: url(empty-pixel.png) repeat;
+}
+
+#area .player {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-left: 1px solid #eaeaeb;
+  border-top: 1px solid #eaeaeb;
+}
+
+#sidebar {
+  float: right;
+  width: 200px;
+}
