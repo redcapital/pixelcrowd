@@ -113,13 +113,13 @@ exports.createHalf = {
     }
   },
 
-  atLeastOnePixelsOn: function(test) {
+  emptyField: function(test) {
     var randomizer = getRandomizer([0, 0, 0, 0, 0, 0, 0, 0, 0]);
     var c = new gameModule.Challenge(3, 3, false);
     var res = c.createHalf(randomizer).data;
 
     var total = res.reduce(function(acc, elem) { return acc + elem; });
-    test.equal(1, total);
+    test.ok(total > 1, "At least two pixels must be on");
 
     test.done();
   },

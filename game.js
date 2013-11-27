@@ -61,23 +61,21 @@ Challenge.prototype.createHalf = function(randomizer) {
         }
       }
 
-      // Set one random pixel to On if everything is empty
-      if (minPixel < 0 && maxPixel < 0) {
-        vector[rangeRandom(0, this.vectorSize - 1)] = 1;
+      // Set at least two pixels On, otherwise we might end up with
+      // one-pixel grid
+      var mid = Math.floor(this.vectorSize / 2) - 1;
+      if (minPixel < 0) {
+        minPixel = rangeRandom(0, mid);
+        vector[minPixel] = 1;
+      }
+      if (maxPixel < 0) {
+        maxPixel = rangeRandom(mid + 1, this.vectorSize - 1);
+        vector[maxPixel] = 1;
       }
 
-      // In a narrow grids make sure last vector pixels are contiguous
-      if (this.numVectors === 1) {
-        var mid = Math.floor(this.vectorSize / 2) - 1;
-        if (!minPixel) {
-          minPixel = rangeRandom(0, mid);
-          vector[minPixel] = 1;
-        }
-        if (!maxPixel) {
-          maxPixel = rangeRandom(mid + 1, this.vectorSize - 1);
-          vector[maxPixel] = 1;
-        }
-
+      // Make sure last vector pixels are contiguous if previous one
+      // was empty
+      if (prevEmpty) {
         // Fill in everything in between
         for (j = minPixel + 1; j < maxPixel; j++) vector[j] = 1;
       }
