@@ -1,15 +1,22 @@
+var $challengePixels = [];
 jQuery(function($) {
 
-  var UP = 0, RIGHT = 1, DOWN = 2, LEFT = 3;
+  var UP = 0, RIGHT = 1, DOWN = 2, LEFT = 3,
+    CHALLENGE_W = 6, CHALLENGE_H = 6, PIXEL_W = 10;
+
   var socket = io.connect('http://localhost'), players = {}, player, $players = {};
   var $ranking = $('#ranking'), $area = $('#area'), $roundTime = $('#roundTime');
+    //$challengePixels = [];
 
   socket.on('start', function(data) {
     player = data.player;
     players = data.game.players;
     refreshArea();
     refreshRanking();
-    refreshTime(data.roundTime);
+    refreshTime(data.game.roundTime);
+    if (data.game.challenge.length !== null) {
+      refreshChallenge(data.game.challenge);
+    }
   });
 
   socket.on('new', function(data) {
@@ -32,6 +39,7 @@ jQuery(function($) {
 
   socket.on('round-start', function(data) {
     if (!player) return;
+    refreshChallenge(data.challenge);
     refreshTime(data.roundTime);
   });
 
@@ -46,6 +54,19 @@ jQuery(function($) {
   });
 
   function startGame() {
+    var $pixels;
+    $('#challenge').css({ width: CHALLENGE_W * PIXEL_W, height: CHALLENGE_H * PIXEL_W });
+    for (var x = 0; x < CHALLENGE_W; x++) {
+      $pixels = [];
+      for (var y = 0; y < CHALLENGE_H; y++) {
+        $pixels.push(
+          $('<div class="pixel" style="display:none"></div>')
+          .css({ left: x * PIXEL_W, top: y * PIXEL_W })
+          .appendTo('#challenge')
+        );
+      }
+      $challengePixels.push($pixels);
+    }
     var name;
     while (!name) {
       name = prompt('Nickname: ').trim();
@@ -54,12 +75,12 @@ jQuery(function($) {
   }
 
   function movePlayer(id, x, y) {
-    $players[id].css({ left: 10 * x, top: 10 * y });
+    $players[id].css({ left: PIXEL_W * x, top: PIXEL_W * y });
   }
 
   function putPlayer(player) {
     if (!$players[player.id]) {
-      $players[player.id] = $('<div class="player"></div>').appendTo($area);
+      $players[player.id] = $('<div class="pixel"></div>').appendTo($area);
     }
     movePlayer(player.id, player.x, player.y);
   }
@@ -81,6 +102,21 @@ jQuery(function($) {
 
   function refreshTime(time) {
     $roundTime.text(time);
+  }
+
+  function refreshChallenge(c) {
+    $('#challenge .pixel').hide();
+    var i, j,
+      x = Math.floor((CHALLENGE_W - c.length) / 2),
+      y = Math.floor((CHALLENGE_H - c[0].length) / 2)
+    ;
+    for (i = 0; i < c.length; i++) {
+      for (j = 0; j < c[0].length; j++) {
+        if (c[i][j]) {
+          $challengePixels[i + x][j + y].show();
+        }
+      }
+    }
   }
 
   $(document).on('keydown', function(e) {

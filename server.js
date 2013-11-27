@@ -45,8 +45,8 @@ game.onRoundFinish = function() {
   io.sockets.emit('round-finish');
 };
 
-game.onRoundStart = function() {
-  io.sockets.emit('round-start', { roundTime: game.roundTime });
+game.onRoundStart = function(challenge) {
+  io.sockets.emit('round-start', { roundTime: game.roundTime, challenge: challenge });
 };
 
 game.onTick = function() {

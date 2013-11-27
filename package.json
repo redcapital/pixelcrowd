@@ -8,5 +8,8 @@
   "dependencies": {
     "node-static": "0.x",
     "socket.io": "0.9.x"
+  },
+  "devDependencies": {
+    "nodeunit": "0.8.x"
   }
 }

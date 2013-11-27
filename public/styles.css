@@ -10,11 +10,13 @@
 
 #area {
   margin-right: 200px;
+}
+.pixelGrid {
   position: relative;
   background: url(empty-pixel.png) repeat;
 }
 
-#area .player {
+.pixelGrid .pixel {
   position: absolute;
   width: 10px;
   height: 10px;
@@ -26,4 +28,8 @@
 #sidebar {
   float: right;
   width: 200px;
+}
+
+#challenge {
+  margin: 0 auto;
 }
