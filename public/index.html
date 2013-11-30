@@ -2,20 +2,151 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>pixelcrowd</title>
+    <title>pixelcrowd game - even one pixel matters</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
     <div id="app">
-      <div id="top">links</div>
+      <div id="top">
+        <div class="logo">
+          <a data-toggle="modal" data-target="#aboutModal" href="#" id="about">About</a>
+          <img src="/logo.png">
+          <span class="words text-muted">even one pixel matters</span>
+        </div>
+        You are a pixel.
+        Use <span class="label label-info">arrow keys</span> to move around.
+        Cooperate with others to build figures displayed on the right.
+        Press <span class="label label-info">spacebar</span> to see where you are.
+      </div>
       <div id="sidebar">
-        <div class="pixelGrid" id="challenge"></div>
-        <div id="roundTime"></div>
-        <ul id="ranking">
-        </ul>
+        <div class="sidebarTop">
+          <h1 id="roundTime" class="text-danger">25</h1>
+          <div class="pixelGrid" id="challenge"></div>
+          <h4 id="myName">pudge</h4>
+          <div>
+            <span class="placeText">Place: <strong id="myPlace">15</strong></span>
+            <span>Score: <strong id="myScore">15</strong></span>
+          </div>
+        </div>
+
+        <div class="statsTableContainer">
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>Place</th>
+                <th>Pixel</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+
+            <tbody id="stats">
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr class="me">
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Peter</td>
+                <td>25</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <div id="area" class="pixelGrid"></div>
+    </div>
+
+    <div class="modal fade" id="aboutModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">About</h4>
+          </div>
+          <div class="modal-body">
+            <p>
+            pixelcrowd is a simple multiplayer game built on top of <a href="http://nodejs.org/">Node.js</a> and <a href="http://socket.io/">Socket.IO</a>.
+            The idea is not mine, this is a clone of a game I played back in 2009 or 2010. To my surprise, I wasn't able to find a link to the original game later.
+            </p>
+
+            <p>
+            The source code is on <a href="https://github.com/galymzhan/pixelcrowd">Github</a>.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>

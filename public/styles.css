@@ -1,3 +1,4 @@
+/* #7c0a7b */
 #app {
   width: 1000px;
   margin: 20px auto;
@@ -5,31 +6,78 @@
 
 #area, #sidebar {
   height: 600px;
-  border: 1px solid red;
+  /*border: 1px solid red;*/
 }
 
 #area {
-  margin-right: 200px;
+  margin-right: 250px;
 }
 .pixelGrid {
   position: relative;
-  background: url(empty-pixel.png) repeat;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QseBSYitRe0xwAAAHJJREFUKM/tkjEOxEAMAsFh//+ySPeXnJQUWJsiOtdrXRsqmhFGhsfxnZmJtAESHck2zuvCvn/QldIucM4JOxGxdoEYUSAASNt68s/YCWkDG72jTLDdOfCHXrgLs14VrR8DQGg8Oxlj9JMl1SxJ1kxXdAMnGSba9yRf9QAAAABJRU5ErkJggg==');
+  /*background-image: url(/empty-pixel.png);*/
 }
 
 .pixelGrid .pixel {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background-color: red;
+  width: 15px;
+  height: 15px;
+  background-color: #7c0a7b;
   border-left: 1px solid #eaeaeb;
   border-top: 1px solid #eaeaeb;
 }
 
 #sidebar {
   float: right;
-  width: 200px;
+  width: 250px;
+  background-color: #f4f5ed;
+  text-align: center;
 }
 
+#roundTime {
+  margin-top: 0;
+  padding-top: 20px;
+}
+.sidebarTop {
+  height: 250px;
+}
+.statsTableContainer {
+  height: 350px;
+  overflow: auto;
+}
 #challenge {
   margin: 0 auto;
+}
+
+#top {
+  margin-bottom: 1em;
+}
+.logo {
+  margin-bottom: 1em;
+}
+.logo img, .logo .words {
+  vertical-align: baseline;
+}
+.logo .words {
+  margin-left: 20px;
+}
+#about {
+  float: right;
+  margin-right: 10px;
+  line-height: 30px;
+}
+
+.placeText {
+  margin-right: 10px;
+}
+
+.statsTableContainer table {
+  width: 90%;
+  margin: 0 auto;
+}
+.statsTableContainer td, .statsTableContainer th {
+  text-align: left;
+}
+.statsTableContainer .me {
+  font-weight: bold;
 }
