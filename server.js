@@ -4,6 +4,7 @@ var file = new nodeStatic.Server('./public');
 var socketIo = require('socket.io');
 
 var game = new gameModule.Game();
+var env = process.env.NODE_ENV || 'development';
 
 var server = require('http').createServer(function(request, response) {
   request.addListener('end', function() {
@@ -14,6 +15,10 @@ var server = require('http').createServer(function(request, response) {
 var io = socketIo.listen(server, {
   transports: ['websocket']
 }), playerIds = {};
+
+if (env != 'development') {
+  io.set('log level', 1);
+}
 
 io.on('connection', function(socket) {
   socket.on('new', function(data) {
