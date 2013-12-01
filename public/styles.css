@@ -35,6 +35,10 @@
   background-color: red;
 }
 
+.pixelGrid .pixel.signal {
+  background-color: yellow;
+}
+
 #sidebar {
   float: right;
   width: 250px;
@@ -89,3 +93,4 @@
 .statsTableContainer .me {
   font-weight: bold;
 }
+

@@ -37,6 +37,10 @@ jQuery(function($) {
       movePlayerPixel(player);
     });
 
+    socket.on('signal', function(data) {
+      showSignal(data.id);
+    });
+
     socket.on('round-start', function(data) {
       refreshChallenge(data.challenge);
       refreshTime(data.roundTime);
@@ -181,6 +185,19 @@ jQuery(function($) {
     }
   }
 
+  function showSignal(playerId) {
+    if (!pixels[playerId]) return;
+    var times = 4, interval;
+    interval = setInterval(function() {
+      if (times % 2) {
+        pixels[playerId].removeClass('signal');
+      } else {
+        pixels[playerId].addClass('signal');
+      }
+      if (--times === 0) clearInterval(interval);
+    }, 100);
+  }
+
   $(document).on('keydown', function(e) {
     if (!me) return;
     var directions = {
@@ -190,11 +207,16 @@ jQuery(function($) {
       40: DOWN
     };
     if (directions.hasOwnProperty(e.which)) {
-      socket.emit('move', { id: me.id, direction: directions[e.which] });
+      socket.emit('move', { direction: directions[e.which] });
+      e.preventDefault();
+    } else if (e.which == 32) {
+      socket.emit('signal');
       e.preventDefault();
     }
   });
 
   startGame();
+
+  $('.hasTooltip').tooltip();
 });
 

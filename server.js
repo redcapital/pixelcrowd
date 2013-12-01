@@ -28,14 +28,21 @@ io.on('connection', function(socket) {
   });
 
   socket.on('move', function(data) {
-    var place = game.move(data.id, data.direction);
+    if (!playerIds[socket.id]) return;
+    var place = game.move(playerIds[socket.id], data.direction);
     if (place !== false) {
-      io.sockets.emit('move', { id: data.id, x: place[0], y: place[1] });
+      io.sockets.emit('move', { id: playerIds[socket.id], x: place[0], y: place[1] });
     }
   });
 
+  socket.on('signal', function() {
+    if (!playerIds[socket.id]) return;
+    io.sockets.emit('signal', { id: playerIds[socket.id] });
+  });
+
   socket.on('disconnect', function() {
-    if (playerIds[socket.id]) game.removePlayer(playerIds[socket.id]);
+    if (!playerIds[socket.id]) return;
+    game.removePlayer(playerIds[socket.id]);
     socket.broadcast.emit('removed', { id: playerIds[socket.id] });
     delete playerIds[socket.id];
   });
