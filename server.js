@@ -64,4 +64,6 @@ game.onTick = function() {
 };
 
 game.run();
-server.listen(3333);
+
+var port = process.env.PORT || 3333;
+server.listen(port);
