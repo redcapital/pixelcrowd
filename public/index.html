@@ -20,7 +20,7 @@
         Press <span class="label label-info">spacebar</span> to
         <a class="hasTooltip" title="Your blinking will be seen by all players" href="javascript:void(0)">communicate</a> :)
       </div>
-      <div id="sidebar">
+      <div id="sidebar" style="display:none">
         <div class="sidebarTop">
           <h1 id="roundTime" class="text-danger"></h1>
           <div class="pixelGrid" id="challenge"></div>
@@ -45,7 +45,11 @@
           </table>
         </div>
       </div>
-      <div id="area" class="pixelGrid"></div>
+      <div id="area" class="pixelGrid" style="display:none"></div>
+
+      <div id="warning">
+        <noscript><strong>You need JavaScript enabled browser to play this</strong></noscript>
+      </div>
     </div>
 
     <div class="modal fade" id="aboutModal">

@@ -99,8 +99,8 @@ jQuery(function($) {
       name = name.trim();
       if (name.length) break;
     }
+    initSocket();
     if (name !== null) {
-      initSocket();
       $('#myName').text(name);
       socket.emit('new', { name: name });
     }
@@ -215,8 +215,16 @@ jQuery(function($) {
     }
   });
 
-  startGame();
 
   $('.hasTooltip').tooltip();
+
+  // WebSocket detection taken from Modernizr: https://github.com/Modernizr/Modernizr
+  if ('WebSocket' in window && window.WebSocket.CLOSING === 2) {
+    $('#warning').hide();
+    $('#area, #sidebar').show();
+    startGame();
+  } else {
+    $('#warning').append('<strong>Sorry, you need a browser with WebSocket support to play this game.</strong>');
+  }
 });
 
