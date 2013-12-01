@@ -174,8 +174,8 @@ Game.prototype.removePlayer = function(playerId) {
 };
 
 Game.prototype.generateChallenge = function() {
-  var w = rangeRandom(2, 2);
-  var h = rangeRandom(2, 2);
+  var w = rangeRandom(2, 5);
+  var h = rangeRandom(2, 5);
   var c = new Challenge(w, h, (Math.random() < 0.5));
 
   return c.createHalf(randomizer).reflect();
