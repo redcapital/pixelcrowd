@@ -10,7 +10,7 @@ jQuery(function($) {
    */
 
   function initSocket() {
-    socket = io.connect(window.location.protocol + '://' + window.location.hostname);
+    socket = io.connect(window.location.hostname);
 
     socket.on('start', function(data) {
       me = data.player;
