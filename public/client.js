@@ -1,126 +1,188 @@
-var $challengePixels = [];
 jQuery(function($) {
 
   var UP = 0, RIGHT = 1, DOWN = 2, LEFT = 3,
-    CHALLENGE_W = 6, CHALLENGE_H = 6, PIXEL_W = 10;
+    CHALLENGE_W = 6, CHALLENGE_H = 6, PIXEL_W = 15;
 
-  var socket = io.connect('http://localhost'), players = {}, player, $players = {};
-  var $ranking = $('#ranking'), $area = $('#area'), $roundTime = $('#roundTime');
-    //$challengePixels = [];
+  var socket, players = {}, me, pixels = {}, challengePixels = [];
 
-  socket.on('start', function(data) {
-    player = data.player;
-    players = data.game.players;
-    refreshArea();
-    refreshRanking();
-    refreshTime(data.game.roundTime);
-    if (data.game.challenge.length !== null) {
+  /**
+   * Socket event handlers
+   */
+
+  function initSocket() {
+    socket = io.connect('http://localhost');
+
+    socket.on('start', function(data) {
+      me = data.player;
+      players = data.game.players;
+      refreshArea();
+      refreshStats();
+      refreshTime(data.game.roundTime);
       refreshChallenge(data.game.challenge);
-    }
-  });
+      $('#myScore').text(me.score);
+    });
 
-  socket.on('new', function(data) {
-    players[data.id] = data;
-    refreshArea();
-    refreshRanking();
-  });
+    socket.on('new', function(player) {
+      players[player.id] = player;
+      movePlayerPixel(player);
+      refreshStats();
+    });
 
-  socket.on('removed', function(data) {
-    if (players[data.id]) delete players[data.id];
-    refreshArea();
-    refreshRanking();
-  });
+    socket.on('removed', function(id) {
+      removePlayer(id);
+      refreshStats();
+    });
 
-  socket.on('move', function(data) {
-    if ($players[data.id]) {
-      movePlayer(data.id, data.x, data.y);
-    }
-  });
+    socket.on('move', function(player) {
+      movePlayerPixel(player);
+    });
 
-  socket.on('round-start', function(data) {
-    if (!player) return;
-    refreshChallenge(data.challenge);
-    refreshTime(data.roundTime);
-  });
+    socket.on('round-start', function(data) {
+      refreshChallenge(data.challenge);
+      refreshTime(data.roundTime);
+    });
 
-  socket.on('round-finish', function(data) {
-    if (!player) return;
-    refreshTime('0');
-  });
+    socket.on('round-finish', function(scores) {
+      refreshTime('0');
+      for (var playerId in scores) {
+        if (players[playerId]) {
+          if (pixels[playerId]) {
+            var cssClass = (scores[playerId] > players[playerId].score) ? 'success' : 'failure';
+            pixels[playerId].addClass(cssClass);
+          }
+          players[playerId].score = scores[playerId];
+        } else {
+          removePlayer(playerId);
+        }
+      }
+      if (me && players[me.id]) {
+        $('#myScore').text(players[me.id].score);
+      }
+      refreshStats();
+      setTimeout(function() {
+        for (var playerId in pixels) {
+          pixels[playerId].attr('class', 'pixel');
+        }
+      }, 1000);
+    });
 
-  socket.on('tick', function(data) {
-    if (!player) return;
-    refreshTime(data.roundTime);
-  });
+    socket.on('tick', function(data) {
+      refreshTime(data.roundTime);
+    });
+  }
+
+
+  /**
+   * Game logic
+   */
 
   function startGame() {
-    var $pixels;
     $('#challenge').css({ width: CHALLENGE_W * PIXEL_W, height: CHALLENGE_H * PIXEL_W });
-    for (var x = 0; x < CHALLENGE_W; x++) {
-      $pixels = [];
-      for (var y = 0; y < CHALLENGE_H; y++) {
-        $pixels.push(
+    for (var i = 0; i < CHALLENGE_W; i++) {
+      challengePixels.push([]);
+      for (var j = 0; j < CHALLENGE_H; j++) {
+        challengePixels[i].push(
           $('<div class="pixel" style="display:none"></div>')
-          .css({ left: x * PIXEL_W, top: y * PIXEL_W })
+          .css({ left: i * PIXEL_W, top: j * PIXEL_W })
           .appendTo('#challenge')
         );
       }
-      $challengePixels.push($pixels);
     }
     var name;
-    while (!name) {
-      name = prompt('Nickname: ').trim();
+    while (true) {
+      name = prompt('Nickname: ');
+      if (name === null) break;
+      name = name.trim();
+      if (name.length) break;
     }
-    socket.emit('new', { name: name });
+    if (name !== null) {
+      initSocket();
+      $('#myName').text(name);
+      socket.emit('new', { name: name });
+    }
   }
 
-  function movePlayer(id, x, y) {
-    $players[id].css({ left: PIXEL_W * x, top: PIXEL_W * y });
+  function removePlayer(playerId) {
+    if (players[playerId]) delete players[playerId];
+    if (pixels[playerId]) {
+      pixels[playerId].remove();
+      delete pixels[playerId];
+    }
   }
 
-  function putPlayer(player) {
-    if (!$players[player.id]) {
-      $players[player.id] = $('<div class="pixel"></div>').appendTo($area);
+  function movePlayerPixel(player) {
+    if (!pixels[player.id]) {
+      pixels[player.id] = $('<div class="pixel"></div>').appendTo('#area');
     }
-    movePlayer(player.id, player.x, player.y);
+    pixels[player.id].css({ left: PIXEL_W * player.x, top: PIXEL_W * player.y });
   }
 
   function refreshArea() {
-    $area.empty();
-    $players = {};
-    for (var id in players) {
-      putPlayer(players[id]);
-    }
+    pixels = {};
+    $('#area').empty();
+    for (var id in players) movePlayerPixel(players[id]);
   }
 
-  function refreshRanking() {
-    $ranking.empty();
+  function refreshStats() {
+    var $stats = $('#stats').empty();
+    var rows = [];
     for (var id in players) {
-      $ranking.append($('<li>').text(players[id].name));
+      rows.push(players[id]);
+    }
+    rows.sort(function(a, b) {
+      if (a.score > b.score) return -1;
+      if (a.score < b.score) return 1;
+      return (a.id < b.id) ? -1 : 1;
+    });
+    for (var i = 0; i < rows.length; i++) {
+      var $tr = $('<tr></tr>');
+      if (me && (rows[i].id == me.id)) {
+        $tr.addClass('me');
+        $('#myPlace').text(i + 1);
+      }
+      $tr.append('<td>' + (i + 1) + '</td>')
+        .append($('<td></td>').text(rows[i].name))
+        .append('<td>' + rows[i].score + '</td>');
+      $stats.append($tr);
     }
   }
 
   function refreshTime(time) {
-    $roundTime.text(time);
+    $('#roundTime').text(time);
   }
 
   function refreshChallenge(c) {
     $('#challenge .pixel').hide();
-    var i, j,
-      x = Math.floor((CHALLENGE_W - c.length) / 2),
-      y = Math.floor((CHALLENGE_H - c[0].length) / 2)
-    ;
-    for (i = 0; i < c.length; i++) {
-      for (j = 0; j < c[0].length; j++) {
-        if (c[i][j]) {
-          $challengePixels[i + x][j + y].show();
+    var w = c & 7;
+    c >>= 3;
+    var h = c & 7;
+    c >>= 3;
+    var i, j, sx = -1, sy = 1000, aw, ah = -1, data = [], bit = 1 << (w * h - 1);
+    for (i = 0; i < w; i++) {
+      data.push([]);
+      for (j = 0; j < h; j++) {
+        data[i].push(!!(c & bit));
+        if (data[i][j]) {
+          if (sx < 0) sx = i;
+          sy = Math.min(sy, j);
+          aw = i - sx + 1;
+          ah = Math.max(ah, j - sy + 1);
         }
+        bit >>= 1;
+      }
+    }
+    var tx = Math.floor((CHALLENGE_W - aw) / 2),
+      ty = Math.floor((CHALLENGE_H - ah) / 2);
+
+    for (i = 0; i < aw; i++) {
+      for (j = 0; j < ah; j++) {
+        if (data[sx + i][sy + j]) challengePixels[tx + i][ty + j].show();
       }
     }
   }
 
   $(document).on('keydown', function(e) {
-    if (!player) return;
+    if (!me) return;
     var directions = {
       37: LEFT,
       38: UP,
@@ -128,7 +190,7 @@ jQuery(function($) {
       40: DOWN
     };
     if (directions.hasOwnProperty(e.which)) {
-      socket.emit('move', { id: player.id, direction: directions[e.which] });
+      socket.emit('move', { id: me.id, direction: directions[e.which] });
       e.preventDefault();
     }
   });

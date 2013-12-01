@@ -28,7 +28,7 @@ assert.notIncludesPixel = function(pixel, arr, message) {
 // 001010
 exports.matchSimple = function(test) {
   var game = new gameModule.Game();
-  game.challenge = [
+  var challenge = [
     [1, 1, 1],
     [0, 1, 0],
     [0, 1, 1]
@@ -45,7 +45,7 @@ exports.matchSimple = function(test) {
 
   game.createPlayer('loser', 5, 2);
 
-  var m = game.findMatches();
+  var m = game.findMatches(challenge);
   test.includesPixel([2, 2], m);
   test.includesPixel([2, 3], m);
   test.includesPixel([3, 3], m);
@@ -62,7 +62,7 @@ exports.matchSimple = function(test) {
 // 1 1 1
 exports.matchOverlapping = function(test) {
   var game = new gameModule.Game();
-  game.challenge = [
+  var challenge = [
     [1, 1], [1, 1],
   ];
 
@@ -73,7 +73,7 @@ exports.matchOverlapping = function(test) {
   game.createPlayer('p5', 2, 0);
   game.createPlayer('p6', 2, 1);
 
-  var m = game.findMatches();
+  var m = game.findMatches(challenge);
   test.includesPixel([0, 0], m);
   test.includesPixel([1, 1], m);
 
@@ -88,7 +88,7 @@ exports.matchOverlapping = function(test) {
 // 0 1 1
 exports.matchAdjacent = function(test) {
   var game = new gameModule.Game();
-  game.challenge = [
+  var challenge = [
     [1, 0, 1]
   ];
 
@@ -98,7 +98,7 @@ exports.matchAdjacent = function(test) {
   game.createPlayer('p4', 2, 0);
   game.createPlayer('p5', 2, 2);
 
-  var m = game.findMatches();
+  var m = game.findMatches(challenge);
   test.includesPixel([1, 0], m);
   test.includesPixel([2, 0], m);
   test.includesPixel([2, 2], m);
@@ -107,6 +107,28 @@ exports.matchAdjacent = function(test) {
 
   test.done();
 };
+
+// 10
+// 11
+exports.matchOnlyOccupied = function(test) {
+  var game = new gameModule.Game();
+  var challenge = [
+    [0, 1], [0, 1],
+  ];
+
+  game.createPlayer('p1', 0, 0);
+  game.createPlayer('p2', 0, 1);
+  game.createPlayer('p3', 1, 1);
+
+  var m = game.findMatches(challenge);
+  test.includesPixel([0, 1], m);
+  test.includesPixel([1, 1], m);
+
+  test.notIncludesPixel([0, 0], m);
+
+  test.done();
+};
+
 
 exports.calculateScores = function(test) {
   var game = new gameModule.Game(),
@@ -121,7 +143,7 @@ exports.calculateScores = function(test) {
 
   test.equal(p1.score, game.bonus);
   test.equal(p2.score, 15 + game.bonus);
-  test.equal(loser.score, -game.bonus);
+  test.equal(loser.score, 0);
 
   test.done();
 };

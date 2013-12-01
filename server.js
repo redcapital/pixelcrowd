@@ -41,12 +41,12 @@ io.on('connection', function(socket) {
   });
 });
 
-game.onRoundFinish = function() {
-  io.sockets.emit('round-finish');
+game.onRoundStart = function() {
+  io.sockets.emit('round-start', { roundTime: game.roundTime, challenge: game.challenge.value() });
 };
 
-game.onRoundStart = function(challenge) {
-  io.sockets.emit('round-start', { roundTime: game.roundTime, challenge: challenge });
+game.onRoundFinish = function() {
+  io.sockets.emit('round-finish', game.publishScores());
 };
 
 game.onTick = function() {

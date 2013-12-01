@@ -27,6 +27,14 @@
   border-top: 1px solid #eaeaeb;
 }
 
+.pixelGrid .pixel.success {
+  background-color: green;
+}
+
+.pixelGrid .pixel.failure {
+  background-color: red;
+}
+
 #sidebar {
   float: right;
   width: 250px;
