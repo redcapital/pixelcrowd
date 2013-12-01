@@ -67,19 +67,7 @@ exports.createHalf = {
 
       test.arrayEqual([0, 1, 1, 1, 0, 1], res);
       test.done();
-    },
-
-    makeConnected: function(test) {
-      // 01xx     01xx
-      // 00xx  => 01xx
-      // 10xx     10xx
-      //
-      var randomizer = getRandomizer([0, 0, 1, 1, 0, 0]);
-      var res = this.c.createHalf(randomizer).data;
-
-      test.arrayEqual([0, 0, 1, 1, 1, 0], res);
-      test.done();
-    },
+    }
   },
 
   horizontal: {
@@ -98,18 +86,6 @@ exports.createHalf = {
 
       test.arrayEqual([0, 1, 0, 0, 1, 0, 1, 1], res);
       test.done();
-    },
-
-    makeConnected: function(test) {
-      // 0101
-      // 0000
-      // xxxx
-
-      var randomizer = getRandomizer([0, 1, 0, 1, 0, 0, 0, 0]);
-      var res = this.c.createHalf(randomizer).data;
-
-      test.arrayEqual([0, 1, 0, 1, 1, 0, 1, 0], res);
-      test.done();
     }
   },
 
@@ -122,19 +98,7 @@ exports.createHalf = {
     test.ok(total > 1, "At least two pixels must be on");
 
     test.done();
-  },
-
-  lastVectorContiguous: function(test) {
-    // 1010
-    // xxxx
-    var randomizer = getRandomizer([1, 0, 1, 0]);
-    var c = new gameModule.Challenge(4, 2, true);
-    var res = c.createHalf(randomizer).data;
-
-    test.arrayEqual([1, 1, 1, 0], res);
-
-    test.done();
-  },
+  }
 
 };
 

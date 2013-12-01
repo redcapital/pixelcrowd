@@ -40,54 +40,23 @@ var Challenge = function(w, h, horizontal) {
 
 Challenge.prototype.createHalf = function(randomizer) {
   this.data = [];
-  var i = this.numVectors, prevEmpty = true, on;
+  var i = this.numVectors * this.vectorSize, count = 0,
+    odd = this.horizontal ? (this.h % 2) : (this.w % 2);
+
   while (i--) {
-    for (var j = 0, vector = [], empty = true; j < this.vectorSize; j++) {
-      on = randomizer();
-      if (!on && !prevEmpty && !this.data[this.data.length - this.vectorSize + j]) {
-        on = 1;
-      }
-      if (on) empty = false;
-      vector.push(on);
+    var on = randomizer();
+    if (on) {
+      if (!i && odd) count += 1; else count += 2;
     }
-    if (!prevEmpty && empty) {
-      vector[rangeRandom(0, this.vectorSize - 1)] = 1;
-      empty = false;
-    }
-
-    // Handle some special cases for last vector
-    if (!i) {
-      var minPixel = -1, maxPixel = -1;
-      for (j = 0; j < vector.length; j++) {
-        if (vector[j]) {
-          if (minPixel < 0) minPixel = j;
-          maxPixel = j;
-        }
-      }
-
-      // Set at least two pixels On, otherwise we might end up with
-      // one-pixel grid
-      var mid = Math.floor(this.vectorSize / 2) - 1;
-      if (minPixel < 0) {
-        minPixel = rangeRandom(0, mid);
-        vector[minPixel] = 1;
-      }
-      if (maxPixel < 0) {
-        maxPixel = rangeRandom(mid + 1, this.vectorSize - 1);
-        vector[maxPixel] = 1;
-      }
-
-      // Make sure last vector pixels are contiguous if previous one
-      // was empty
-      if (prevEmpty) {
-        // Fill in everything in between
-        for (j = minPixel + 1; j < maxPixel; j++) vector[j] = 1;
-      }
-    }
-    this.data = this.data.concat(vector);
-    prevEmpty = empty;
+    this.data.push(on);
   }
-
+  while (count < 2) {
+    i = rangeRandom(0, this.data.length - 1);
+    if (!this.data[i]) {
+      this.data[i] = 1;
+      count += 1;
+    }
+  }
   return this;
 };
 
