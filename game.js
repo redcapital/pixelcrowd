@@ -115,7 +115,7 @@ Challenge.prototype.value = function() {
 };
 
 var Game = function() {
-  this.bonus = 5;
+  this.failurePenalty = 3;
   this.playerCount = 0;
   this.idCount = 1;
   this.used = [];
@@ -173,14 +173,6 @@ Game.prototype.removePlayer = function(playerId) {
   }
 };
 
-Game.prototype.generateChallenge = function() {
-  var w = rangeRandom(2, 5);
-  var h = rangeRandom(2, 5);
-  var c = new Challenge(w, h, (Math.random() < 0.5));
-
-  return c.createHalf(randomizer).reflect();
-};
-
 Game.prototype.move = function(playerId, direction) {
   if (!this.roundActive) return false;
   if (this.players[playerId]) {
@@ -210,16 +202,23 @@ Game.prototype.move = function(playerId, direction) {
   return false;
 };
 
-Game.prototype.setRoundTime = function() {
-  this.roundTime = 5;
+Game.prototype.setRoundParameters = function() {
+  var w = rangeRandom(2, 5);
+  var h = rangeRandom(2, 5);
+  this.challenge = new Challenge(w, h, (Math.random() < 0.5)).createHalf(randomizer).reflect();
+
+  var occupied = this.challenge.data.reduce(function(a, e) {
+    return a + e;
+  });
+  this.roundTime = Math.max(4, Math.round(occupied * 1.5));
+  this.bonus = Math.max(3, occupied);
 };
 
 Game.prototype._runRound = function(callback) {
   var game = this, interval;
-  this.roundActive = true;
-  this.challenge = this.generateChallenge();
-  this.setRoundTime();
+  this.setRoundParameters();
   this.onRoundStart();
+  this.roundActive = true;
   interval = setInterval(function() {
     game.roundTime--;
     if (game.roundTime === 0) {
@@ -288,7 +287,7 @@ Game.prototype.calculateScores = function(match) {
   }
   for (var id in this.players) {
     if (winners[id]) this.players[id].score += this.bonus;
-    else this.players[id].score = Math.max(0, this.players[id].score - this.bonus);
+    else this.players[id].score = Math.max(0, this.players[id].score - this.failurePenalty);
   }
 };
 
