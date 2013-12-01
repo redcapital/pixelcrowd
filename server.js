@@ -28,22 +28,25 @@ io.on('connection', function(socket) {
   });
 
   socket.on('move', function(data) {
-    if (!playerIds[socket.id]) return;
-    var place = game.move(playerIds[socket.id], data.direction);
+    var playerId = playerIds[socket.id];
+    if (!playerId) return;
+    var place = game.move(playerId, data.direction);
     if (place !== false) {
-      io.sockets.emit('move', { id: playerIds[socket.id], x: place[0], y: place[1] });
+      io.sockets.emit('move', { id: playerId, x: place[0], y: place[1] });
     }
   });
 
   socket.on('signal', function() {
-    if (!playerIds[socket.id]) return;
-    io.sockets.emit('signal', { id: playerIds[socket.id] });
+    var playerId = playerIds[socket.id];
+    if (!playerId) return;
+    io.sockets.emit('signal', { id: playerId });
   });
 
   socket.on('disconnect', function() {
-    if (!playerIds[socket.id]) return;
-    game.removePlayer(playerIds[socket.id]);
-    socket.broadcast.emit('removed', { id: playerIds[socket.id] });
+    var playerId = playerIds[socket.id];
+    if (!playerId) return;
+    game.removePlayer(playerId);
+    socket.broadcast.emit('removed', { id: playerId });
     delete playerIds[socket.id];
   });
 });

@@ -28,8 +28,8 @@ jQuery(function($) {
       refreshStats();
     });
 
-    socket.on('removed', function(id) {
-      removePlayer(id);
+    socket.on('removed', function(data) {
+      removePlayer(data.id);
       refreshStats();
     });
 
