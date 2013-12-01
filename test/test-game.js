@@ -129,6 +129,33 @@ exports.matchOnlyOccupied = function(test) {
   test.done();
 };
 
+// 00
+// 10
+// 10
+// 00
+// 10
+// 10
+//
+exports.matchInterleaved = function(test) {
+  var game = new gameModule.Game();
+  var challenge = [
+    [1, 0, 0, 1]
+  ];
+
+  game.createPlayer('p1', 0, 1);
+  game.createPlayer('p2', 0, 2);
+  game.createPlayer('p3', 0, 4);
+  game.createPlayer('p4', 0, 5);
+
+  var m = game.findMatches(challenge);
+  test.includesPixel([0, 1], m);
+  test.includesPixel([0, 2], m);
+  test.includesPixel([0, 4], m);
+  test.includesPixel([0, 5], m);
+
+  test.done();
+};
+
 
 exports.calculateScores = function(test) {
   var game = new gameModule.Game(),
@@ -136,14 +163,16 @@ exports.calculateScores = function(test) {
     p2 = game.createPlayer('p2', 1, 4),
     loser = game.createPlayer('loser', 5, 5)
   ;
+  game.bonus = 5;
   p2.score = 15;
+  loser.score = 11;
   game.calculateScores([
     [1, 3], [1, 4]
   ]);
 
   test.equal(p1.score, game.bonus);
   test.equal(p2.score, 15 + game.bonus);
-  test.equal(loser.score, 0);
+  test.ok(loser.score < 11, "Loser must lose score");
 
   test.done();
 };
