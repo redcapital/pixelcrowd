@@ -70,6 +70,31 @@ Challenge.prototype.reflect = function() {
   return this;
 };
 
+Challenge.prototype.random = function(randomizer, upperLimit) {
+  var c = this.w * this.h, onCount = 0, i;
+  upperLimit = Math.max(2, upperLimit);
+  this.data = [];
+  for (i = 0; i < c; i++) this.data.push(0);
+
+  for (i = 0; i < c && upperLimit; i++) {
+    var on = randomizer();
+    onCount += on;
+    upperLimit -= on;
+    this.data[i] = on;
+  }
+
+  // Set at least 2 pixels On
+  while (onCount < 2) {
+    i = rangeRandom(0, c - 1);
+    if (!this.data[i]) {
+      onCount += 1;
+      this.data[i] = 1;
+    }
+  }
+
+  return this;
+};
+
 Challenge.prototype.toArray = function() {
   var i, result = [];
   if (this.horizontal) {
@@ -205,12 +230,12 @@ Game.prototype.move = function(playerId, direction) {
 Game.prototype.setRoundParameters = function() {
   var w = rangeRandom(2, 5);
   var h = rangeRandom(2, 5);
-  this.challenge = new Challenge(w, h, (Math.random() < 0.5)).createHalf(randomizer).reflect();
+  this.challenge = new Challenge(w, h, (Math.random() < 0.5)).random(randomizer, this.playerCount);
 
   var occupied = this.challenge.data.reduce(function(a, e) {
     return a + e;
   });
-  this.roundTime = Math.max(4, Math.round(occupied * 1.5));
+  this.roundTime = Math.max(4, Math.round(occupied * 1.7));
   this.bonus = Math.max(3, occupied);
 };
 

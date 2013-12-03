@@ -44,8 +44,11 @@ function randomChallenge() {
 
   var c = new gameModule.Challenge(w, h, horizontal);
 
-  render(c.createHalf(randomizer).reflect().value());
+  render(c.random(randomizer, 20).value());
+  //render(c.createHalf(randomizer).reflect().value());
   console.log('w:', w, 'h:', h, 'axis:', (horizontal ? '-' : '|'));
 }
 
-render(338);
+//randomChallenge();
+render(3930);
+//render(6804);
