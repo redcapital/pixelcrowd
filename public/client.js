@@ -161,7 +161,7 @@ jQuery(function($) {
     c >>= 3;
     var h = c & 7;
     c >>= 3;
-    var i, j, sx = -1, sy = 1000, aw, ah = -1, data = [], bit = 1 << (w * h - 1);
+    var i, j, sx = -1, sy = 1000, ey = -1, aw, ah, data = [], bit = 1 << (w * h - 1);
     for (i = 0; i < w; i++) {
       data.push([]);
       for (j = 0; j < h; j++) {
@@ -169,12 +169,13 @@ jQuery(function($) {
         if (data[i][j]) {
           if (sx < 0) sx = i;
           sy = Math.min(sy, j);
+          ey = Math.max(ey, j);
           aw = i - sx + 1;
-          ah = Math.max(ah, j - sy + 1);
         }
         bit >>= 1;
       }
     }
+    ah = ey - sy + 1;
     var tx = Math.floor((CHALLENGE_W - aw) / 2),
       ty = Math.floor((CHALLENGE_H - ah) / 2);
 
