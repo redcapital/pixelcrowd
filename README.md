@@ -13,4 +13,4 @@ $ ./node_modules/.bin/nodeunit test/
 
 The game was a huge success among my coworkers:
 
-[!Screenshot](https://raw.github.com/galymzhan/pixelcrowd/master/pixelcrowd/game.png "Screenshot")
+![Screenshot](https://raw.github.com/galymzhan/pixelcrowd/master/game.png "Screenshot")
